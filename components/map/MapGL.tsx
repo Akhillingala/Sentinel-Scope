@@ -4,7 +4,14 @@ import { useRef, useEffect, useState, useCallback } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 
-const DARK_STYLE = "mapbox://styles/mapbox/dark-v11";
+export const MAP_STYLES = {
+  dark: "mapbox://styles/mapbox/dark-v11",
+  streets: "mapbox://styles/mapbox/streets-v12",
+  outdoors: "mapbox://styles/mapbox/outdoors-v12",
+  light: "mapbox://styles/mapbox/light-v11",
+} as const;
+
+const DARK_STYLE = MAP_STYLES.dark;
 const DEFAULT_CENTER: [number, number] = [10, 20];
 const DEFAULT_ZOOM = 2.2;
 
@@ -17,6 +24,7 @@ interface MapGLProps {
   className?: string;
   center?: [number, number];
   zoom?: number;
+  style?: string;
   onLoad?: (map: mapboxgl.Map) => void;
   mapRef?: React.RefObject<MapGLHandle | null>;
 }
@@ -25,6 +33,7 @@ export function MapGL({
   className = "",
   center = DEFAULT_CENTER,
   zoom = DEFAULT_ZOOM,
+  style = DARK_STYLE,
   onLoad,
   mapRef,
 }: MapGLProps) {
@@ -42,9 +51,10 @@ export function MapGL({
     const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
     if (!token || !containerRef.current) return;
 
+    mapboxgl.accessToken = token;
     const map = new mapboxgl.Map({
       container: containerRef.current,
-      style: DARK_STYLE,
+      style,
       center,
       zoom,
       projection: "globe",
@@ -54,11 +64,13 @@ export function MapGL({
     map.on("load", () => {
       mapInstance.current = map;
       setLoaded(true);
-      map.setFog({
-        color: "rgb(9, 9, 20)",
-        "high-color": "rgb(30, 40, 80)",
-        "horizon-blend": 0.2,
-      });
+      if (style.includes("dark")) {
+        map.setFog({
+          color: "rgb(9, 9, 20)",
+          "high-color": "rgb(30, 40, 80)",
+          "horizon-blend": 0.2,
+        });
+      }
       onLoad?.(map);
     });
 
@@ -67,7 +79,7 @@ export function MapGL({
       mapInstance.current = null;
       setLoaded(false);
     };
-  }, [center[0], center[1], zoom, onLoad]);
+  }, [center[0], center[1], zoom, style, onLoad]);
 
   useEffect(() => {
     if (!mapRef) return;

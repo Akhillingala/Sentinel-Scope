@@ -4,6 +4,7 @@ import { useMemo, useEffect, useRef } from "react";
 import { MapboxOverlay } from "@deck.gl/mapbox";
 import { GeoJsonLayer } from "@deck.gl/layers";
 import * as d3 from "d3-scale-chromatic";
+import mapboxgl from "mapbox-gl";
 import type { Map } from "mapbox-gl";
 
 export interface RiskFeature {

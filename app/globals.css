@@ -158,3 +158,18 @@
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
+
+/* Map container: solid background so grid/gradient doesn’t show through the map */
+.map-container {
+  background-color: #0d1117;
+  isolation: isolate;
+}
+
+/* Isolate Mapbox from global * styles (border-border, outline-ring) that can break canvas rendering */
+.map-container .mapboxgl-map,
+.map-container .mapboxgl-canvas-container,
+.map-container .mapboxgl-canvas,
+.map-container .mapboxgl-control-container {
+  border: none !important;
+  outline: none !important;
+}

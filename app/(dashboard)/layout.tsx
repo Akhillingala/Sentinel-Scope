@@ -6,7 +6,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-grid-gradient bg-grid-lines">
+    <div className="min-h-screen bg-background">
       <DashboardHeader />
       <main className="relative">{children}</main>
     </div>
